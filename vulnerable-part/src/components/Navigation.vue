@@ -182,7 +182,7 @@
   .main-content{
     width: 100%;
     height: 100%;
-    background-color: #ffffff;
+    background-color: #F6F6F6;
   }
   .nav{
     text-align: left;

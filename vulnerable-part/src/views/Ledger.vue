@@ -40,15 +40,15 @@
       return {
         ledgerList: [
           {
-            label: '编号',
-            name: 'name'
-          },
-          {
             label: '名称',
             name: 'name'
           },
           {
             label: '型号',
+            name: 'name'
+          },
+          {
+            label: '编号',
             name: 'name'
           },
           {
@@ -123,6 +123,7 @@
     justify-content: center;
     justify-items: center;
     padding: 10px;
+    background-color: #ffffff;
   }
   .contain-content{
     width: 80%;

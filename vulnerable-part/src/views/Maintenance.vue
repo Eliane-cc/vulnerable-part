@@ -1,58 +1,82 @@
 <template>
   <div class="contain">
     <div>
+      <!--  查询    -->
       <a-form class="form" :form="form" @submit="handleSearch">
-        <a-row>
+        <a-row :gutter="24">
           <a-col
             v-for="(item,index) in label"
             :key="index"
-            :span="8"
+            :span="10"
             class="margin-bottom"
           >
             <div class="flex-center">
-              <a-col :span="7">
+              <a-col :span="5">
                 {{item.title}}：
               </a-col>
-              <a-col :span="17">
-                <a-input :placeholder="item.placeholder" :name="item.name"/>
+              <a-col :span="15">
+                <a-tree-select
+                  v-model="value"
+                  show-search
+                  style="width: 100%"
+                  :dropdown-style="{ maxHeight: '260px', overflow: 'auto' }"
+                  placeholder="请选择"
+                  allow-clear
+                  tree-default-expand-all
+                >
+                  <a-tree-select-node key="random1" value="车间0">
+                    <div slot="title">车间0</div>
+                  </a-tree-select-node>
+                  <a-tree-select-node key="random2" value="sss">
+                    <div slot="title">车间1</div>
+                  </a-tree-select-node>
+                  <a-tree-select-node key="random3" value="sss">
+                    <div slot="title">车间2</div>
+                  </a-tree-select-node>
+                  <a-tree-select-node key="random3" value="sss">
+                    <div slot="title">车间4</div>
+                  </a-tree-select-node>
+                  <a-tree-select-node key="random3" value="sss">
+                    <div slot="title">车间0</div>
+                  </a-tree-select-node>
+                  <a-tree-select-node key="random3" value="sss">
+                    <div slot="title">车间0</div>
+                  </a-tree-select-node>
+                  <a-tree-select-node key="random3" value="sss">
+                    <div slot="title">车间0</div>
+                  </a-tree-select-node>  <a-tree-select-node key="random3" value="sss">
+                  <div slot="title">车间0</div>
+                </a-tree-select-node>  <a-tree-select-node key="random3" value="sss">
+                  <div slot="title">车间0</div>
+                </a-tree-select-node>  <a-tree-select-node key="random3" value="车间0">
+                  <div slot="title">车间0</div>
+                </a-tree-select-node>  <a-tree-select-node key="random3" value="车间8">
+                  <div slot="title">车间8</div>
+                </a-tree-select-node>
+                </a-tree-select>
               </a-col>
+
             </div>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="24" :style="{ textAlign: 'right' }">
-            <a-button type="primary" html-type="submit" @click="searchDev">
-              查询
+            <a-button @click="search" type="primary">
+              筛选
             </a-button>
-            <a-button type="primary" :style="{ marginLeft: '8px' }" @click="createDev">
+            <a-button :style="{ marginLeft: '8px' }" @click="createInfo" type="primary">
               新增
             </a-button>
           </a-col>
         </a-row>
       </a-form>
+      <!--  表格列表信息    -->
       <div class="table">
-        <a-table :columns="columns" :data-source.sync="data" bordered class="column" :pagination="pagination" :loading="isLoading">
-          <template
-            v-for="col in ['isadmin']"
-            :slot="col"
-            slot-scope="text, record, index"
-          >
-            <template v-if="text > 2">
-              <div :key="index" class="column-content" slot="title" :title="text">
-                {{ text==3 ? '超级管理员' : '' }}
-              </div>
-            </template>
-            <template v-else>
-              <div :key="index" class="column-content" slot="title" :title="text">
-                {{ text==1 ? '操作员' : '管理员' }}
-              </div>
-            </template>
-
-          </template>
-          <template slot="operation" slot-scope="text, record, index">
-            <div class="editable-row-operations">
-               <span class="oper">
-                  <a @click="() => editDev(record,text)"><a-icon type="edit" />编辑</a>
+        <a-table :columns="columns" :data-source="data" bordered class="column">
+          <template slot="operation" slot-scope="text,record,index">
+            <div v-if="record.children" class="editable-row-operations">
+              <span class="oper">
+                  <a @click="() => editInfo(record,text)"><a-icon type="edit" />编辑</a>
                   <a-popconfirm title="是否确定删除?" cancelText="取消" okText="确定" @confirm="() => deleteDev(record)">
                     <a><a-icon type="delete" />删除</a>
                   </a-popconfirm>
@@ -61,53 +85,48 @@
           </template>
         </a-table>
       </div>
+
+      <!--  新增、编辑弹窗    -->
+      <action-modal :modalVisible.sync="isShowModal" :data.sync="modalData" :title="modalTitle"></action-modal>
     </div>
-<!--    <action-modal :modalVisible.sync="isShowModal" :data.sync="modalData" :title="modalTitle" :dataList.sync="data"></action-modal>-->
   </div>
 </template>
 
 <script>
-  //表列
+  import ActionModal from "../components/Modal/ActionModal";
+  //表格格式
   const columns = [
     {
-      title: '序号',
-      dataIndex: 'uId',
-      width: '10%',
+      title: '',
+      dataIndex: 'index',
+      width: '8%',
       ellipsis: true,
       align: 'center',
-      scopedSlots: { customRender: 'uId' },
+      scopedSlots: { customRender: 'index' },
     },
     {
-      title: '姓名',
-      dataIndex: 'uName',
-      width: '15%',
+      title: '名称',
+      dataIndex: 'name',
+      width: '24%',
       ellipsis: true,
       align: 'center',
-      scopedSlots: { customRender: 'uName' },
+      scopedSlots: { customRender: 'name' },
     },
     {
-      title: '工号',
-      dataIndex: 'uWorknumber',
-      width: '19%',
+      title: '型号',
+      dataIndex: 'model',
+      width: '24%',
       ellipsis: true,
       align: 'center',
-      scopedSlots: { customRender: 'uWorknumber' },
+      scopedSlots: { customRender: 'model' },
     },
     {
-      title: '联系方式',
-      dataIndex: 'uPhone',
-      width: '19%',
+      title: '点检内容',
+      dataIndex: 'checkContent',
+      width: '26%',
       ellipsis: true,
       align: 'center',
-      scopedSlots: { customRender: 'uPhone' },
-    },
-    {
-      title: '用户角色',
-      dataIndex: 'isadmin',
-      width: '19%',
-      ellipsis: true,
-      align: 'center',
-      scopedSlots: { customRender: 'isadmin' },
+      scopedSlots: { customRender: 'checkContent' },
     },
     {
       title: '操作',
@@ -117,46 +136,111 @@
     },
   ];
 
+  const data = [];
+  //表格数据
+  for (let i = 0; i < 25; i++) {
+    data.push({
+      name: `干粉${i}`,
+      model: `00${i}#`,
+      checkContent: `喷嘴${i}`,
+      children: [
+        {
+          name: `干粉${i}`,
+          model: `00${i}#`,
+          checkContent: `喷嘴${i}`,
+        },
+        {
+          name: `干粉${i}`,
+          model: `00${i}#`,
+          checkContent: `铅封${i}`,
+        }
+      ]
+    });
+  }
   export default {
     name: "Maintenance.vue",
     components: {
-
+      ActionModal
     },
     data(){
       this.cacheData = data.map(item => ({ ...item }));
       return{
         label: [
           {
-            title: '姓名',
-            placeholder: '请输入姓名',
-            name: 'e_workshop_id'
+            title: '型号',
+            placeholder: '请输入型号',
+            name: 'c_name'
           },
           {
-            title: '工号',
-            placeholder: '请输入工号',
-            name: 'e_machine_id'
+            title: '名称',
+            placeholder: '请输入名称',
+            name: 'c_name'
           }
         ],
         isShowModal: false,
         modalTitle: '',
         modalData: [],
+        index: '0',
         form: this.$form.createForm(this, { name: 'advanced_search' }),
-        isLoading: true, //表格分页加载
-        pageNum: 1,   //记录当前页码
-        pagination: {
-          total: 0,
-          defaultPageSize: 10,
-          onChange:(page,pageSize)=>this.userList(page,pageSize),//点击页码事件
-        },
         data,
         columns,
         editingKey: '',
         treeExpandedKeys: [],
         value: undefined,
-
       }
     },
     methods: {
+      //新增点检设备信息
+      createInfo(){
+        this.isShowModal = true
+        this.modalTitle = '新增'
+        let data = [
+          {
+            label: '名称',
+            name: 'name'
+          },
+          {
+            label: '型号',
+            name: 'model'
+          },
+          {
+            label: '点检内容',
+            name: 'eName'
+          }
+        ]
+        this.modalData.createData = data
+      },
+      //编辑点检信息
+      //编辑
+      editInfo(value,text) {
+        let editData = [
+          {
+            title: '名称',
+            key: 'name',
+            content: value.name,
+            name: 'name'
+          },
+          {
+            title: '型号',
+            key: 'model',
+            content: value.model,
+            name: 'model'
+          },
+          {
+            title: '点检内容',
+            key: 'checkContent',
+            content: value.checkContent,
+            name: 'checkContent'
+          }
+        ]
+        this.isShowModal = true
+        this.modalTitle = '编辑'
+       // this.modalData.actionText = '编辑设备'
+        this.modalData.editData = editData
+      //  this.modalData.value = value
+       // this.modalData.displayData = ""
+        //this.modalData.pageNum = this.pageNum
+      },
       //表单查询
       handleSearch(e) {
         this.form.validateFields((error, values) => {
@@ -164,154 +248,7 @@
           console.log('Received values of form: ', values);
         });
       },
-      //编辑
-      editDev(value,text) {
-        //console.log("编辑",value,text);
-        let displayData = [
-          {
-            title: '序号',
-            key: 'uId',
-            content: value.uId
-          },
-          {
-            title: '姓名',
-            key: 'uName',
-            content: value.uName
-          },
-          {
-            title: '工号',
-            key: 'uWorknumber',
-            content: value.uWorknumber
-          },
-          {
-            title: '联系方式',
-            key: 'uPhone',
-            content: value.uPhone
-          }
-        ]
-        let editData = [
-          {
-            title: '重置密码',
-            key: 'uPassword',
-            content: '',
-            name: 'uPassword'
-          },
-          {
-            title: '确认密码',
-            key: 'uPasswordConfirm',
-            content: '',
-            name: 'uPasswordConfirm'
-          },
-          {
-            title: '用户角色',
-            key: 'isadmin',
-            content: value.isadmin,
-            name: 'isadmin',
-            children: [
-              {
-                id: '1',
-                name: '操作工'
-              },
-              {
-                id: '2',
-                name: '管理员'
-              },
-            ]
-          }
-        ]
-        this.isShowModal = true
-        this.modalTitle = '编辑'
-        this.modalData.actionText = '编辑用户'
-        this.modalData.displayData = displayData
-        this.modalData.editData = editData
-        this.modalData.value = value
-        this.modalData.pageNum = this.pageNum
-      },
 
-      //删除用户
-      deleteDev(record) {
-        this.isLoading = true
-        //let params = new URLSearchParams();
-        //params.append("uWorknumber", record.uWorknumber);
-        let params = {
-          uWorknumber: record.uWorknumber
-        }
-        deleteUser(params)
-          .then((res) => {
-            if (res.msg == "SUCCESS"){
-              this.$message.success("删除用户成功！");
-              //重新刷新用户列表
-              this.userList(this.pageNum, 10);
-            }
-            this.isLoading = false
-          })
-      },
-
-      //查询设备
-      searchDev(){},
-      //新增用户
-      createDev(){
-        this.isShowModal = true
-        this.modalTitle = '新增'
-        this.modalData.actionText = '新增用户'
-        let data = [
-          {
-            label: '姓名',
-            name: 'uName'
-          },
-          {
-            label: '联系方式',
-            name: 'uPhone'
-          },
-          {
-            label: '工号/账号',
-            name: 'uWorknumber'
-          },
-          {
-            label: '用户角色',
-            name: 'isadmin',
-            children: [
-              {
-                id: '1',
-                name: '操作工'
-              },
-              {
-                id: '2',
-                name: '管理员'
-              },
-            ]
-          },
-          {
-            label: '密码',
-            name: 'uPassword'
-          },
-        ]
-        this.modalData.createData = data
-        this.modalData.displayData = ""
-        this.modalData.pageNum = this.pageNum
-      },
-
-      //用户列表显示
-      userList(pageNum=1, pageSize=10){
-        this.isLoading = true
-        this.pageNum = pageNum
-        //let params = new URLSearchParams();
-        //params.append("pageNum", pageNum);
-        //params.append("pageSize", pageSize);
-        let params = {
-          pageNum: pageNum,
-          pageSize: pageSize
-        }
-        getUserList(params)
-          .then((res) => {
-            if (res.msg == "SUCCESS"){
-              this.data = res.data.list
-              this.pagination.total = res.data.total
-              this.isLoading = false
-            }
-            console.log("用户管理列表", res);
-          })
-      }
     },
   }
 </script>
@@ -319,11 +256,10 @@
 <style scoped>
   .contain{
     color: #ffffff;
-    background-color: #fefefe;
   }
   .form {
     padding: 24px;
-    background: #fbfbfb;
+    background: #ffffff;
     border: 1px solid #d9d9d9;
     border-radius: 6px;
   }
@@ -354,9 +290,5 @@
   .margin-bottom{
     margin-bottom: 20px;
   }
-  .spin-container {
-    width: 100%;
-    height: 400px;
-    background-color: yellow;
-  }
+
 </style>
