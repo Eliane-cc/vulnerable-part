@@ -127,17 +127,18 @@
   .contain-content{
     width: 80%;
     border-radius: 7px;
-    border: 1px solid #C4C4C4;
+    border: 1px solid rgba(24,144,255,0.5);
     margin-top: 10px;
   }
   .contain-title{
     font-size: 19px;
-    background: #efefef;
+    background: #E6F7FF;
     font-weight: 600;
     border-top-right-radius: 7px;
     border-top-left-radius: 7px;
     padding: 10px;
     text-align: center;
+    color: rgba(24,144,255,0.9);
   }
   .content{
     font-size: 16px;

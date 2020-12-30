@@ -4,6 +4,7 @@ import Check from "../components/Check";
 import CheckInfo from "../components/CheckInfo";
 import Index from "../views/Index";
 import Ledger from "../views/Ledger";
+import Maintenance from "../views/Maintenance";
 
 Vue.use(Router)
 
@@ -18,6 +19,11 @@ export default new Router({
       path: '/ledger',
       name: 'Ledger',
       component: Ledger
+    },
+    {
+      path: '/maintenance',
+      name: 'Maintenance',
+      component: Maintenance
     },
     {
       path: '/check',

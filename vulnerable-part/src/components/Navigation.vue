@@ -29,7 +29,6 @@
           :default-selected-keys="defaultNav"
           :default-open-keys="['sub1','sub2']"
           mode="inline"
-          theme="dark"
           :inline-collapsed="collapsed"
           class="nav"
         >
@@ -41,7 +40,7 @@
             <a-menu-item key="2" @click="navPage('/ledger')">
               台账
             </a-menu-item>
-            <a-menu-item key="3" @click="navPage('/equitmentPartInfo')">
+            <a-menu-item key="3" @click="navPage('/maintenance')">
               点检维护
             </a-menu-item>
           </a-sub-menu>
@@ -155,7 +154,7 @@
 
 <style scoped>
   .container{
-    background-color: #040014;
+    background-color: #F6F6F6;
     /*height: 100vh;*/
   }
   .row{
@@ -166,18 +165,19 @@
     flex-direction: row;
   }
   .icon{
-    color: #F1F1F1;
+    color: #1890FF;
     font-size: 20px;
     cursor: pointer;
   }
   .nav-title-text{
-    color: #ffffff;
+    color: #1890FF;
     font-size: 17px;
-    margin-left: 30px;
+    margin-left: 12px;
   }
   .nav-title{
     justify-content: left;
     align-items: center;
+    align-content: center;
   }
   .main-content{
     width: 100%;
@@ -191,10 +191,11 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 10px;
+    padding: 15px;
+    background-color: #ffffff;
   }
   .nav-title-user{
-    color: #ffffff;
+    color: #666666;
     font-size: 15px;
     display: flex;
     justify-content: space-between;
