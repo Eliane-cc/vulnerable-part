@@ -1,18 +1,17 @@
 <template>
   <div class="container">
-    xxxx
     <template>
-      <personal-info></personal-info>
+      <ledger></ledger>
     </template>
   </div>
 </template>
 
 <script>
-  import PersonalInfo from "./PersonalInfo";
+  import Ledger from "./Ledger";
   export default {
     name: "Index.vue",
     components: {
-      PersonalInfo
+      Ledger
     },
     data() {
       return {

@@ -5,7 +5,7 @@
         <div class="nav-icon" @click="toggleCollapsed">
           <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'" class="icon"/>
         </div>
-        <div class="nav-title-text">设备生命周期管理系统</div>
+        <div class="nav-title-text">易损零件系统</div>
       </div>
       <div>
         <a-dropdown placement="bottomCenter">
@@ -27,43 +27,48 @@
       <a-col :span="navSpan">
         <a-menu
           :default-selected-keys="defaultNav"
-          :default-open-keys="['sub1','sub2','sub3']"
+          :default-open-keys="['sub1','sub2']"
           mode="inline"
           theme="dark"
           :inline-collapsed="collapsed"
           class="nav"
         >
-          <a-menu-item key="1" class="home" @click="navPage('/index')">
-            <a-icon type="home" />
-            <span>首页</span>
-          </a-menu-item>
           <a-sub-menu key="sub1">
             <span slot="title"><a-icon type="database"/><span>基本数据</span></span>
-            <a-menu-item key="2" @click="navPage('/devInfo')">
-              设备信息
+            <a-menu-item key="1" @click="navPage('/devInfo')">
+              监督
+            </a-menu-item>
+            <a-menu-item key="2" @click="navPage('/ledger')">
+              台账
             </a-menu-item>
             <a-menu-item key="3" @click="navPage('/equitmentPartInfo')">
-              设备零件信息
+              点检维护
             </a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="sub2">
             <span slot="title"><a-icon type="setting" /><span>查询管理</span></span>
             <a-menu-item key="4" @click="navPage('/maintainData')">
-              维护数据
+              点检数据
             </a-menu-item>
             <a-menu-item key="5" @click="navPage('/repairData')">
-              维修数据
+              借用数据
             </a-menu-item>
             <a-menu-item key="6" @click="navPage('/changeData')">
-              更换数据
+              监督数据
+            </a-menu-item>
+            <a-menu-item key="7" @click="navPage('/repairData')">
+              台账数据
+            </a-menu-item>
+            <a-menu-item key="8" @click="navPage('/changeData')">
+              点检维护数据
             </a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="sub3">
             <span slot="title"><a-icon type="user" /><span>账户信息</span></span>
-            <a-menu-item key="7" @click="navPage('/personalInfo')">
+            <a-menu-item key="9" @click="navPage('/personalInfo')">
               个人信息
             </a-menu-item>
-            <a-menu-item key="8" @click="navPage('/userManagement')">
+            <a-menu-item key="10" @click="navPage('/userManagement')">
               用户管理
             </a-menu-item>
           </a-sub-menu>
@@ -176,7 +181,7 @@
   }
   .main-content{
     width: 100%;
-    height: 550px;
+    height: 100%;
     background-color: #ffffff;
   }
   .nav{
