@@ -1,17 +1,17 @@
 <template>
   <div class="container">
     <template>
-      <ledger></ledger>
+      <borrowing-supervision></borrowing-supervision>
     </template>
   </div>
 </template>
 
 <script>
-  import Ledger from "./Ledger";
+  import BorrowingSupervision from "./Supervision/BorrowingSupervision";
   export default {
     name: "Index.vue",
     components: {
-      Ledger
+      BorrowingSupervision
     },
     data() {
       return {

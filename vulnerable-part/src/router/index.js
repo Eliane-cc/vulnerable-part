@@ -6,14 +6,32 @@ import Index from "../views/Index";
 import Ledger from "../views/Ledger";
 import Maintenance from "../views/Maintenance";
 
+//监督
+import BorrowingReview from "../views/Supervision/BorrowingReview";
+import InspectionSupervision from "../views/Supervision/InspectionSupervision";
+
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
       path: '/',
+      redirect: '/index',
+    },
+    {
+      path: '/index',
       name: 'Index',
       component: Index
+    },
+    {
+      path: '/borrowingReview',
+      name: 'BorrowingReview',
+      component: BorrowingReview
+    },
+    {
+      path: '/inspectionSupervision',
+      name: 'InspectionSupervision',
+      component: InspectionSupervision
     },
     {
       path: '/ledger',

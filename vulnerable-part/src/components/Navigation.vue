@@ -33,41 +33,50 @@
           class="nav"
         >
           <a-sub-menu key="sub1">
-            <span slot="title"><a-icon type="database"/><span>基本数据</span></span>
-            <a-menu-item key="1" @click="navPage('/devInfo')">
-              监督
+            <span slot="title"><a-icon type="insurance" /><span>监督审核</span></span>
+            <a-menu-item key="1" @click="navPage('/index')">
+              借用监督
             </a-menu-item>
-            <a-menu-item key="2" @click="navPage('/ledger')">
-              台账
+            <a-menu-item key="2" @click="navPage('/inspectionSupervision')">
+              点检监督
             </a-menu-item>
-            <a-menu-item key="3" @click="navPage('/maintenance')">
-              点检维护
+            <a-menu-item key="3" @click="navPage('/borrowingReview')">
+              借用审核
             </a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="sub2">
-            <span slot="title"><a-icon type="setting" /><span>查询管理</span></span>
-            <a-menu-item key="4" @click="navPage('/maintainData')">
-              点检数据
+            <span slot="title"><a-icon type="database"/><span>基本数据</span></span>
+            <a-menu-item key="4" @click="navPage('/ledger')">
+              台账
             </a-menu-item>
-            <a-menu-item key="5" @click="navPage('/repairData')">
-              借用数据
-            </a-menu-item>
-            <a-menu-item key="6" @click="navPage('/changeData')">
-              监督数据
-            </a-menu-item>
-            <a-menu-item key="7" @click="navPage('/repairData')">
-              台账数据
-            </a-menu-item>
-            <a-menu-item key="8" @click="navPage('/changeData')">
-              点检维护数据
+            <a-menu-item key="5" @click="navPage('/maintenance')">
+              点检维护
             </a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="sub3">
+            <span slot="title"><a-icon type="setting" /><span>查询管理</span></span>
+            <a-menu-item key="6" @click="navPage('/maintainData')">
+              点检数据
+            </a-menu-item>
+            <a-menu-item key="7" @click="navPage('/repairData')">
+              借用数据
+            </a-menu-item>
+            <a-menu-item key="8" @click="navPage('/changeData')">
+              监督数据
+            </a-menu-item>
+            <a-menu-item key="9" @click="navPage('/repairData')">
+              台账数据
+            </a-menu-item>
+            <a-menu-item key="10" @click="navPage('/changeData')">
+              点检维护数据
+            </a-menu-item>
+          </a-sub-menu>
+          <a-sub-menu key="sub4">
             <span slot="title"><a-icon type="user" /><span>账户信息</span></span>
-            <a-menu-item key="9" @click="navPage('/personalInfo')">
+            <a-menu-item key="11" @click="navPage('/personalInfo')">
               个人信息
             </a-menu-item>
-            <a-menu-item key="10" @click="navPage('/userManagement')">
+            <a-menu-item key="12" @click="navPage('/userManagement')">
               用户管理
             </a-menu-item>
           </a-sub-menu>
@@ -104,16 +113,16 @@
         if (this.$route.path == '/index'){
           this.defaultNav[0] = '1'
         }
-        else if(this.$route.path == '/devInfo'){
+        else if(this.$route.path == '/inspectionSupervision'){
           this.defaultNav[1] = '2'
         }
-        else if(this.$route.path == '/equitmentPartInfo'){
+        else if(this.$route.path == '/borrowingReview'){
           this.defaultNav[1] = '3'
         }
-        else if(this.$route.path == '/maintainData'){
+        else if(this.$route.path == '/ledger'){
           this.defaultNav[1] = '4'
         }
-        else if(this.$route.path == '/repairData'){
+        else if(this.$route.path == '/maintenance'){
           this.defaultNav[1] = '5'
         }
         else if(this.$route.path == '/changeData'){
