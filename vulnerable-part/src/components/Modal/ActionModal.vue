@@ -105,7 +105,6 @@
                   <br />
                   <a-checkbox-group v-model="checkedList" :options="plainOptions" @change="onChange" />
                 </a-card>
-<!--                <a-textarea :placeholder="`请输入${item.label}`" :rows="3" :name="item.name"/>-->
               </template>
             </a-form-item>
           </a-form>
@@ -202,12 +201,29 @@
         </a-row>
       </div>
     </a-modal>
+    <!--  详情  -->
+    <a-modal :visible="modalVisible" :title="title" @ok="handleOk" @cancel="handleCancel" cancelText="取消" okText="确定" v-else-if="title == '详情'">
+      <div>
+        <!--  设备基本信息显示    -->
+        <div v-if="data.displayData">
+          <a-row type="flex" justify="center">
+            <a-col :span="12" v-for="(item,index) in data.displayData" :key="index" class="margin-bottom" >
+              <a-col :span="10" class="title">
+                {{item.title}}：
+              </a-col>
+              <a-col :span="14" class="text_center">
+                {{item.content}}
+              </a-col>
+            </a-col>
+          </a-row>
+        </div>
+      </div>
+    </a-modal>
   </div>
 </template>
 
 <script>
-  const plainOptions = ['Apple', 'Pear', 'Orange'];
-  const defaultCheckedList = ['Apple', 'Orange'];
+
   export default {
     name: "ActionModal.vue",
     props: ['data','modalVisible','title'],
@@ -279,6 +295,9 @@
     margin-top: 10px;
     width: 100%;
   }
+  .margin-bottom{
+    margin-bottom: 10px;
+  }
   .checked{
     font-size: 16px;
     margin-bottom: 6px;
@@ -289,5 +308,9 @@
   }
   .text{
     margin-left: 8px;
+  }
+  .title{
+    font-weight: 600;
+    font-size: 14px;
   }
 </style>

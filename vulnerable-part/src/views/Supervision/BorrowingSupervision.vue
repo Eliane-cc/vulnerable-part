@@ -3,8 +3,8 @@
     <!--  表格头部标签页  -->
     <div class="tag-vedio">
       <a-tabs default-active-key="1" @change="callback">
-        <!--    未监督      -->
-        <a-tab-pane key="1" tab="未确认">
+        <!--    未审核      -->
+        <a-tab-pane key="1" tab="未审核">
           <!--  未监督信息    -->
           <div class="table">
             <a-table :columns="columns" :data-source="data" bordered  class="column">
@@ -19,24 +19,44 @@
               </template>
               <template slot="operation" slot-scope="text,record,index">
                 <div class="oper">
-                  <a @click="supervise(record)"><a-icon type="check-circle" /> 确认</a>
+                  <a-popconfirm title="是否审核通过?" cancelText="取消" okText="确定" @confirm="() => auditCertain(record)">
+                    <a><a-icon type="check-circle" /> 审核</a>
+                  </a-popconfirm>
                 </div>
               </template>
             </a-table>
           </div>
         </a-tab-pane>
-        <!--   已监督     -->
-        <a-tab-pane key="2" tab="已确认" force-render>
-          <!--  已监督信息    -->
+        <!--   使用中     -->
+        <a-tab-pane key="2" tab="使用中">
+          <!--  未监督信息    -->
           <div class="table">
+            <a-table :columns="columns_using" :data-source="data" bordered  class="column">
+              <template slot="operation" slot-scope="text,record,index">
+                <template v-if="record.isReturn">
+                  <div class="oper">
+                    <a-popconfirm title="是否监督确认?" cancelText="取消" okText="确定" @confirm="() => superviseCertain(record)">
+                      <a><a-icon type="check-circle" /> 归还确认</a>
+                    </a-popconfirm>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="oper">
+                    <a-tag color="#1890FF" class="using">使用中</a-tag>
+                  </div>
+                </template>
+              </template>
+            </a-table>
+          </div>
+        </a-tab-pane>
+        <!--   已归还     -->
+        <a-tab-pane key="3" tab="已归还" force-render>
+          <!--  已监督信息    -->
+          <div class="table returnTable">
             <a-table :columns="columns_certain" :data-source="data" class="column">
-              <template
-                v-for="col in ['workshop', 'machine', 'equitment','equitmentCode','part','partCode','operation']"
-                :slot="col"
-                slot-scope="text,record,index"
-              >
-                <div :key="index" class="column-content" slot="title" :title="text">
-                  {{ text }}
+              <template slot="operation" slot-scope="text,record,index">
+                <div class="oper">
+                  <a @click="detail(record)">详情</a>
                 </div>
               </template>
             </a-table>
@@ -44,16 +64,35 @@
         </a-tab-pane>
       </a-tabs>
     </div>
+    <action-modal :modalVisible.sync="isShowModal" :data.sync="modalData" :title="modalTitle"></action-modal>
   </div>
 </template>
 
 <script>
+  import ActionModal from "../../components/Modal/ActionModal";
   //表格格式
+  //未审核
   const columns = [
+    {
+      title: '设备名称',
+      dataIndex: 'equipName',
+      width: '11%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'equipName' },
+    },
+    {
+      title: '设备型号',
+      dataIndex: 'equipModel',
+      width: '11%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'equipModel' },
+    },
     {
       title: '借用人员',
       dataIndex: 'borrowPerson',
-      width: '15%',
+      width: '11%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'borrowPerson' },
@@ -61,7 +100,7 @@
     {
       title: '部门',
       dataIndex: 'part',
-      width: '15%',
+      width: '11%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'part' },
@@ -69,7 +108,7 @@
     {
       title: '借用日期',
       dataIndex: 'borrowDate',
-      width: '18%',
+      width: '16%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'borrowDate' },
@@ -77,7 +116,7 @@
     {
       title: '借用地点',
       dataIndex: 'borrowPlace',
-      width: '17%',
+      width: '12%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'borrowPlace' },
@@ -85,7 +124,7 @@
     {
       title: '预归还日期',
       dataIndex: 'preReturnDate',
-      width: '18%',
+      width: '16%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'preReturnDate' },
@@ -97,11 +136,28 @@
       scopedSlots: { customRender: 'operation' },
     },
   ];
-  const columns_certain = [
+  //使用中
+  const columns_using = [
+    {
+      title: '设备名称',
+      dataIndex: 'equipName',
+      width: '10%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'equipName' },
+    },
+    {
+      title: '设备型号',
+      dataIndex: 'equipModel',
+      width: '10%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'equipModel' },
+    },
     {
       title: '借用人员',
       dataIndex: 'borrowPerson',
-      width: '15%',
+      width: '10%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'borrowPerson' },
@@ -109,7 +165,7 @@
     {
       title: '部门',
       dataIndex: 'part',
-      width: '15%',
+      width: '9%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'part' },
@@ -117,7 +173,7 @@
     {
       title: '借用日期',
       dataIndex: 'borrowDate',
-      width: '18%',
+      width: '14%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'borrowDate' },
@@ -125,7 +181,7 @@
     {
       title: '借用地点',
       dataIndex: 'borrowPlace',
-      width: '17%',
+      width: '11%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'borrowPlace' },
@@ -133,31 +189,127 @@
     {
       title: '预归还日期',
       dataIndex: 'preReturnDate',
-      width: '18%',
+      width: '14%',
       ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'preReturnDate' },
     },
     {
-      title: '已归还日期',
+      title: '借用审核人员',
+      dataIndex: 'borrowSupPer',
+      width: '13%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'borrowSupPer' },
+    },
+    {
+      title: '操作',
+      dataIndex: 'operation',
+      align: 'center',
+      scopedSlots: { customRender: 'operation' },
+    },
+  ];
+  //已归还
+  const columns_certain = [
+    {
+      title: '设备名称',
+      dataIndex: 'equipName',
+      width: '10%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'equipName' },
+    },
+    {
+      title: '设备型号',
+      dataIndex: 'equipModel',
+      width: '10%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'equipModel' },
+    },
+    {
+      title: '借用人员',
+      dataIndex: 'borrowPerson',
+      width: '10%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'borrowPerson' },
+    },
+    {
+      title: '借用日期',
+      dataIndex: 'borrowDate',
+      width: '15%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'borrowDate' },
+    },
+    {
+      title: '借用地点',
+      dataIndex: 'borrowPlace',
+      width: '13%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'borrowPlace' },
+    },
+    {
+      title: '预归还日期',
+      dataIndex: 'preReturnDate',
+      width: '15%',
+      ellipsis: true,
+      align: 'center',
+      scopedSlots: { customRender: 'preReturnDate' },
+    },
+    {
+      title: '归还日期',
       dataIndex: 'returnDate',
+      width: '15%',
+      ellipsis: true,
       align: 'center',
       scopedSlots: { customRender: 'returnDate' },
+    },
+    {
+      title: '操作',
+      dataIndex: 'operation',
+      align: 'center',
+      scopedSlots: { customRender: 'operation' },
     },
   ];
 
   const data = [];
   //表格数据
   for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i.toString(),
-      borrowPerson: `Elaine`,
-      part: `部门${i}#`,
-      borrowDate: `2021-01-06 14:00`,
-      borrowPlace: `借用地点`,
-      preReturnDate: `2021-01-10 14:00`,
-      returnDate: `2021-01-09 11:00`
-    });
+    if (i%2 == 0){
+      data.push({
+        key: i.toString(),
+        equipName: `卷筒`,
+        equipModel: `型号一`,
+        borrowPerson: `Elaine`,
+        part: `部门${i}#`,
+        borrowDate: `2021-01-06 14:00`,
+        borrowPlace: `借用地点`,
+        borrowSupPer: `Linda`,
+        preReturnDate: `2021-01-10 14:00`,
+        returnDate: `2021-01-09 11:00`,
+        returnSupPer: `张三`,
+        isReturn: true
+      });
+    } else{
+      data.push({
+        key: i.toString(),
+        equipName: `干粉灭火器`,
+        equipModel: `型号二`,
+        borrowPerson: `Elaine`,
+        part: `部门${i}#`,
+        borrowDate: `2021-01-06 14:00`,
+        borrowPlace: `借用地点`,
+        borrowSupPer: `Linda`,
+        preReturnDate: `2021-01-10 14:00`,
+        returnDate: `2021-01-09 11:00`,
+        returnSupPer: `张三`,
+        isReturn: false
+      });
+    }
+
   }
 
   export default {
@@ -170,19 +322,75 @@
         index: '0',
         data,
         columns,
-        columns_certain
+        columns_certain,
+        columns_using
       }
     },
+    components: {
+      ActionModal
+    },
     methods: {
-      //未监督确认
-      supervise(value){
+      //查看详情
+      detail(value){
+        let displayData = [
+          {
+            title: '设备名称',
+            key: 'equipName',
+            content: value.equipName
+          },
+          {
+            title: '设备型号',
+            key: 'equipModel',
+            content: value.equipModel
+          },
+          {
+            title: '借用人员',
+            key: 'borrowPerson',
+            content: value.borrowPerson
+          },
+          {
+            title: '借用日期',
+            key: 'borrowDate',
+            content: value.borrowDate
+          },
+          {
+            title: '借用地点',
+            key: 'borrowPlace',
+            content: value.borrowPlace
+          },
+          {
+            title: '预归还日期',
+            key: 'preReturnDate',
+            content: value.preReturnDate
+          },
+          {
+            title: '归还审核人',
+            key: 'returnSupPer',
+            content: value.returnSupPer
+          },
+          {
+            title: '借用审核人',
+            key: 'borrowSupPer',
+            content: value.borrowSupPer
+          }
+        ]
+        this.isShowModal = true
+        this.modalTitle = '详情'
+        this.modalData.displayData = displayData
+      },
+      //监督确认操作
+      superviseCertain(value){
+
+      },
+      //审核
+      auditCertain(value){
 
       }
     },
   }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
   .flex{
     display: flex;
     flex-direction: row;
@@ -213,6 +421,9 @@
     margin-top: 30px;
     border-radius: 6px;
   }
+  .using{
+    margin-left: 10px;
+  }
   .column{
     background-color: #ffffff;
   }
@@ -233,6 +444,24 @@
     margin-bottom: 20px;
   }
 
+  /*覆盖ant默认样式*/
+  .table{
+    :global(.ant-table-thead > tr > th){
+      padding: 15px 6px;
+    }
+    :global(.ant-table-tbody > tr > td){
+      padding: 13px 6px;
+    }
+  }
+  .returnTable{
+    :global(.ant-table-thead > tr > th){
+      background-color: rgba(230,247,255,0.6);
+      color: #333333;
+    }
+    :global(.ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td){
+      background-color: white;
+    }
+  }
 
   /* 覆盖默认的ant样式 */
   /*.tag-vedio{*/
